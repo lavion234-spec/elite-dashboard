@@ -1,0 +1,79 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "João Silva",
+      "email": "joao@email.com",
+      "role": "Admin",
+      "status": "active",
+      "joinDate": "2024-01-15",
+      "avatar": "https://ui-avatars.com/api/?name=João+Silva&background=random"
+    },
+    {
+      "id": "2",
+      "name": "Maria Santos",
+      "email": "maria@email.com",
+      "role": "Editor",
+      "status": "active",
+      "joinDate": "2024-02-20",
+      "avatar": "https://ui-avatars.com/api/?name=Maria+Santos&background=random"
+    },
+    {
+      "id": "3",
+      "name": "Pedro Oliveira",
+      "email": "pedro@email.com",
+      "role": "Viewer",
+      "status": "inactive",
+      "joinDate": "2024-03-10",
+      "avatar": "https://ui-avatars.com/api/?name=Pedro+Oliveira&background=random"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "TXN-0001",
+      "user": "João Silva",
+      "amount": 1250.00,
+      "status": "completed",
+      "date": "2024-12-20T10:30:00Z",
+      "category": "Vendas"
+    },
+    {
+      "id": "TXN-0002",
+      "user": "Maria Santos",
+      "amount": 890.50,
+      "status": "pending",
+      "date": "2024-12-21T14:15:00Z",
+      "category": "Assinatura"
+    },
+    {
+      "id": "TXN-0003",
+      "user": "Pedro Oliveira",
+      "amount": 2340.00,
+      "status": "completed",
+      "date": "2024-12-22T09:45:00Z",
+      "category": "Produto"
+    },
+    {
+      "id": "TXN-0004",
+      "user": "Ana Costa",
+      "amount": 450.75,
+      "status": "failed",
+      "date": "2024-12-22T16:20:00Z",
+      "category": "Serviço"
+    },
+    {
+      "id": "TXN-0005",
+      "user": "Carlos Souza",
+      "amount": 3200.00,
+      "status": "completed",
+      "date": "2024-12-23T11:00:00Z",
+      "category": "Consultoria"
+    }
+  ],
+  "metrics": {
+    "totalRevenue": 124500,
+    "growth": 23,
+    "users": 1234,
+    "orders": 567
+  }
+}
