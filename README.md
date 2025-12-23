@@ -195,19 +195,20 @@ PROJETO DASH BOARD/
 ## 📸 Screenshots
 
 ### Dashboard - Tema Claro
-![Dashboard Light]<img width="1323" height="911" alt="image" src="https://github.com/user-attachments/assets/1ed751ba-a065-4a5d-b40a-5f3d719bb8fc" />
+<img width="1848" height="924" alt="image" src="https://github.com/user-attachments/assets/15ef2cab-affc-4056-9caa-49a9eab9b1c1" />
+
 
 
 ### Dashboard - Tema Escuro
-![Dashboard Dark] <img width="1319" height="906" alt="image" src="https://github.com/user-attachments/assets/925a8f55-f39c-436c-aa70-2c12d4465cb7" />
+ <img width="1319" height="906" alt="image" src="https://github.com/user-attachments/assets/925a8f55-f39c-436c-aa70-2c12d4465cb7" />
 
 
 ### Login
-![Login]<img width="1324" height="904" alt="image" src="https://github.com/user-attachments/assets/14627d3c-94ee-4952-8bc4-c3da45c12724" />
+<img width="1324" height="904" alt="image" src="https://github.com/user-attachments/assets/14627d3c-94ee-4952-8bc4-c3da45c12724" />
 
 
 ### Analytics
-![Analytics]<img width="1870" height="920" alt="image" src="https://github.com/user-attachments/assets/06285b76-6f5f-4a43-ac76-4e4e217f1749" />
+<img width="1870" height="920" alt="image" src="https://github.com/user-attachments/assets/06285b76-6f5f-4a43-ac76-4e4e217f1749" />
 
 
 ## 🔧 Personalização
