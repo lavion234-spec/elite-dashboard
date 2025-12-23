@@ -200,7 +200,8 @@ PROJETO DASH BOARD/
 
 
 ### Dashboard - Tema Escuro
- <img width="1319" height="906" alt="image" src="https://github.com/user-attachments/assets/925a8f55-f39c-436c-aa70-2c12d4465cb7" />
+<img width="1853" height="923" alt="image" src="https://github.com/user-attachments/assets/6b1835d9-a413-440f-8fca-3df32d9f5daf" />
+
 
 
 ### Login
