@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { useProductsStore } from '../store/productsStore'
 import { 
   BarChart, 
   Bar, 
@@ -10,6 +12,7 @@ import {
   Legend, 
   ResponsiveContainer 
 } from 'recharts'
+import { TrendingUp, Package } from 'lucide-react'
 
 const monthlyData = [
   { month: 'Jan', receita: 12000, despesas: 8000, lucro: 4000 },
@@ -30,23 +33,32 @@ const weeklyData = [
   { day: 'Dom', usuarios: 85 },
 ]
 
-const productData = [
-  { produto: 'Produto A', vendas: 4500 },
-  { produto: 'Produto B', vendas: 3800 },
-  { produto: 'Produto C', vendas: 3200 },
-  { produto: 'Produto D', vendas: 2900 },
-  { produto: 'Produto E', vendas: 2400 },
-]
-
 export default function Analytics() {
+  const { topProducts, fetchTopProducts, loading } = useProductsStore()
+
+  useEffect(() => {
+    fetchTopProducts()
+  }, [fetchTopProducts])
+
+  // Converter top products para formato do gráfico
+  const productChartData = topProducts.map(p => ({
+    produto: p.produto_nome,
+    vendas: p.total_vendido
+  }))
+
   return (
     <div className="space-y-6">
       {/* Título */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Analytics</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">
-          Análises detalhadas e insights
-        </p>
+      <div className="flex items-center gap-3">
+        <div className="p-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg shadow-blue-500/50">
+          <TrendingUp className="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Analytics</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            Análises detalhadas e insights do negócio
+          </p>
+        </div>
       </div>
 
       {/* Gráfico de Barras - Receita vs Despesas */}
@@ -104,26 +116,49 @@ export default function Analytics() {
           </ResponsiveContainer>
         </div>
 
-        {/* Gráfico de Barras Horizontal - Produtos */}
+        {/* Gráfico de Barras Horizontal - Top 5 Produtos do MySQL */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 animate-fade-in">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Top 5 Produtos
-          </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={productData} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
-              <XAxis type="number" className="text-gray-600 dark:text-gray-400" />
-              <YAxis dataKey="produto" type="category" className="text-gray-600 dark:text-gray-400" />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: 'white', 
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '0.5rem'
-                }}
-              />
-              <Bar dataKey="vendas" fill="#f59e0b" radius={[0, 8, 8, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Package className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Top 5 Produtos Mais Vendidos
+              </h3>
+            </div>
+            {loading && (
+              <div className="w-5 h-5 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+            )}
+          </div>
+          {productChartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={productChartData} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
+                <XAxis type="number" className="text-gray-600 dark:text-gray-400" />
+                <YAxis 
+                  dataKey="produto" 
+                  type="category" 
+                  className="text-gray-600 dark:text-gray-400"
+                  width={120}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'white', 
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '0.5rem'
+                  }}
+                  formatter={(value: number) => [`R$ ${value.toFixed(2)}`, 'Total Vendido']}
+                />
+                <Bar dataKey="vendas" fill="#8b5cf6" radius={[0, 8, 8, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center h-[300px] text-gray-500 dark:text-gray-400">
+              <div className="text-center">
+                <Package className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                <p>Nenhum produto vendido ainda</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

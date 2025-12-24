@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { User, Mail, Calendar, MoreVertical, UserPlus } from 'lucide-react'
+import { User, Mail, Calendar, MoreVertical, UserPlus, Ban, Trash2, CheckCircle } from 'lucide-react'
 import Button from '../components/Button'
 import Modal from '../components/Modal'
 import Input from '../components/Input'
+import ConfirmDialog from '../components/ConfirmDialog'
+import Toast from '../components/Toast'
 
 interface UserData {
   id: string
@@ -57,6 +59,11 @@ export default function Users() {
   const [users, setUsers] = useState<UserData[]>(mockUsers)
   const [showModal, setShowModal] = useState(false)
   const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Viewer' })
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [showBlockDialog, setShowBlockDialog] = useState(false)
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' | 'info' } | null>(null)
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
 
   const handleAddUser = () => {
     if (newUser.name && newUser.email) {
@@ -72,8 +79,53 @@ export default function Users() {
       setUsers([...users, user])
       setShowModal(false)
       setNewUser({ name: '', email: '', role: 'Viewer' })
+      setToast({ message: 'Usuário adicionado com sucesso!', type: 'success' })
     }
   }
+
+  const handleDeleteUser = () => {
+    if (selectedUserId) {
+      setUsers(users.filter(u => u.id !== selectedUserId))
+      setShowDeleteDialog(false)
+      setSelectedUserId(null)
+      setOpenMenuId(null)
+      setToast({ message: 'Usuário excluído com sucesso!', type: 'success' })
+    }
+  }
+
+  const handleToggleBlock = () => {
+    if (selectedUserId) {
+      setUsers(users.map(u => 
+        u.id === selectedUserId 
+          ? { ...u, status: u.status === 'active' ? 'inactive' : 'active' }
+          : u
+      ))
+      const user = users.find(u => u.id === selectedUserId)
+      const action = user?.status === 'active' ? 'bloqueado' : 'desbloqueado'
+      setShowBlockDialog(false)
+      setSelectedUserId(null)
+      setOpenMenuId(null)
+      setToast({ message: `Usuário ${action} com sucesso!`, type: 'success' })
+    }
+  }
+
+  const openDeleteDialog = (userId: string) => {
+    setSelectedUserId(userId)
+    setShowDeleteDialog(true)
+    setOpenMenuId(null)
+  }
+
+  const openBlockDialog = (userId: string) => {
+    setSelectedUserId(userId)
+    setShowBlockDialog(true)
+    setOpenMenuId(null)
+  }
+
+  const toggleMenu = (userId: string) => {
+    setOpenMenuId(openMenuId === userId ? null : userId)
+  }
+
+  const selectedUser = users.find(u => u.id === selectedUserId)
 
   return (
     <div className="space-y-6">
@@ -165,9 +217,44 @@ export default function Users() {
                 alt={user.name}
                 className="w-16 h-16 rounded-full"
               />
-              <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                <MoreVertical className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => toggleMenu(user.id)}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                >
+                  <MoreVertical className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                </button>
+                
+                {openMenuId === user.id && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-lg shadow-xl border border-gray-200 dark:border-gray-600 z-10 animate-scale-in">
+                    <div className="py-1">
+                      <button
+                        onClick={() => openBlockDialog(user.id)}
+                        className="w-full px-4 py-2 text-left text-sm flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200"
+                      >
+                        {user.status === 'active' ? (
+                          <>
+                            <Ban className="w-4 h-4 text-yellow-600" />
+                            Bloquear Usuário
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle className="w-4 h-4 text-green-600" />
+                            Desbloquear Usuário
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => openDeleteDialog(user.id)}
+                        className="w-full px-4 py-2 text-left text-sm flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-red-600 dark:text-red-400"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Excluir Usuário
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
@@ -253,6 +340,39 @@ export default function Users() {
           </div>
         </div>
       </Modal>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleDeleteUser}
+        title="Excluir Usuário"
+        message={`Tem certeza que deseja excluir o usuário ${selectedUser?.name}? Esta ação não pode ser desfeita.`}
+        variant="danger"
+      />
+
+      {/* Block/Unblock Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showBlockDialog}
+        onClose={() => setShowBlockDialog(false)}
+        onConfirm={handleToggleBlock}
+        title={selectedUser?.status === 'active' ? 'Bloquear Usuário' : 'Desbloquear Usuário'}
+        message={
+          selectedUser?.status === 'active'
+            ? `Deseja bloquear o usuário ${selectedUser?.name}? Ele não poderá mais acessar o sistema.`
+            : `Deseja desbloquear o usuário ${selectedUser?.name}? Ele poderá acessar o sistema novamente.`
+        }
+        variant={selectedUser?.status === 'active' ? 'warning' : 'info'}
+      />
+
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   )
 }

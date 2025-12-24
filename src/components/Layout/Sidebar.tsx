@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { 
   LayoutDashboard, 
   BarChart3, 
+  Package,
   Users, 
   Settings,
   Sparkles
@@ -15,6 +16,7 @@ interface SidebarProps {
 const menuItems = [
   { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { path: '/analytics', icon: BarChart3, label: 'Analytics' },
+  { path: '/products', icon: Package, label: 'Produtos' },
   { path: '/users', icon: Users, label: 'Usuários' },
   { path: '/settings', icon: Settings, label: 'Configurações' }
 ]

@@ -4,6 +4,7 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Analytics from './pages/Analytics'
 import Users from './pages/Users'
+import Products from './pages/Products'
 import Settings from './pages/Settings'
 import Layout from './components/Layout/Layout'
 
@@ -18,6 +19,7 @@ function App() {
         <Route element={isAuthenticated ? <Layout /> : <Navigate to="/login" />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/analytics" element={<Analytics />} />
+          <Route path="/products" element={<Products />} />
           <Route path="/users" element={<Users />} />
           <Route path="/settings" element={<Settings />} />
         </Route>

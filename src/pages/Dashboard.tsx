@@ -45,11 +45,27 @@ const pieChartData = [
 ]
 
 export default function Dashboard() {
-  const { transactions, loading, fetchTransactions } = useDashboardStore()
+  const { 
+    transactions, 
+    metrics, 
+    loading, 
+    apiConnected,
+    fetchTransactions,
+    fetchMetrics,
+    checkApiConnection 
+  } = useDashboardStore()
 
   useEffect(() => {
-    fetchTransactions()
-  }, [fetchTransactions])
+    // Verificar conexão e buscar dados ao montar o componente
+    const initData = async () => {
+      await checkApiConnection()
+      await Promise.all([
+        fetchTransactions(),
+        fetchMetrics()
+      ])
+    }
+    initData()
+  }, [fetchTransactions, fetchMetrics, checkApiConnection])
 
   const columns = [
     {
@@ -128,41 +144,51 @@ export default function Dashboard() {
           <div>
             <h1 className="text-4xl font-bold gradient-text">Dashboard Elite</h1>
             <p className="text-gray-600 dark:text-gray-400 mt-1">
-              Visão completa e em tempo real do seu negócio
+              {apiConnected ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                  Conectado ao banco de dados MySQL
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
+                  Usando dados de demonstração
+                </span>
+              )}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Métricas com Gradientes Personalizados */}
+      {/* Métricas com Dados Reais da API */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Receita Total"
-          value="R$ 124,5k"
-          change={12.5}
+          value={metrics ? `R$ ${(metrics.total_vendas / 1000).toFixed(1)}k` : 'R$ 0'}
+          change={metrics?.crescimento_percentual || 0}
           icon={DollarSign}
           gradient="from-green-500 to-emerald-600"
           loading={loading}
         />
         <MetricCard
-          title="Crescimento"
-          value="+23%"
-          change={8.2}
+          title="Lucro Líquido"
+          value={metrics ? `R$ ${(metrics.total_lucro / 1000).toFixed(1)}k` : 'R$ 0'}
+          change={metrics?.margem_lucro || 0}
           icon={TrendingUp}
           gradient="from-brand-500 to-brand-600"
           loading={loading}
         />
         <MetricCard
-          title="Usuários"
-          value="1,234"
+          title="Total Gastos"
+          value={metrics ? `R$ ${(metrics.total_gastos / 1000).toFixed(1)}k` : 'R$ 0'}
           change={-2.4}
           icon={Users}
           gradient="from-accent-500 to-accent-600"
           loading={loading}
         />
         <MetricCard
-          title="Pedidos"
-          value="567"
+          title="Margem de Lucro"
+          value={metrics ? `${metrics.margem_lucro.toFixed(1)}%` : '0%'}
           change={15.3}
           icon={ShoppingCart}
           gradient="from-orange-500 to-orange-600"
